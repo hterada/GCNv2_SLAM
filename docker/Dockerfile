@@ -41,11 +41,12 @@ RUN make install
 # NUMA
 RUN apt-get install -y libnuma-dev
 
-# Pytorch
-# WORKDIR /
-# RUN git clone --recursive -b v1.0.1 https://github.com/pytorch/pytorch
-# WORKDIR /pytorch/build
-# RUN python ../tools/build_libtorch.py
+# Pytorch C++ lib
+WORKDIR /
+ARG pytorch_src_update=1
+RUN git clone --recursive -b v1.0.1-cudnn8.2 https://github.com/hterada/pytorch.git
+WORKDIR /pytorch/build
+RUN python ../tools/build_libtorch.py
 
 
 
