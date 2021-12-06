@@ -38,6 +38,9 @@ RUN cmake ..
 RUN make
 RUN make install
 
+# NUMA
+RUN apt-get install -y libnuma-dev
+
 # Pytorch
 # WORKDIR /
 # RUN git clone --recursive -b v1.0.1 https://github.com/pytorch/pytorch
