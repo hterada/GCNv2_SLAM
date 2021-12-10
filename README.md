@@ -41,7 +41,7 @@ The built libtorch library is located at ```pytorch/torch/lib/tmp_install/``` in
 **Plese avoid using the pre-built version of libtorch since it will cause linking errors (due to [CXX11 ABI issue](https://github.com/pytorch/pytorch/issues/13541)).**
 
 ## Pangolin
-We use [Pangolin](https://github.com/stevenlovegrove/Pangolin) for visualization and user interface. Dowload and install instructions can be found at: https://github.com/stevenlovegrove/Pangolin.
+We use [Pangolin](https://github.com/stevenlovegrove/Pangolin) for visualization and user interface. Dowload and install instructions can be found at: https://github.com/hterada/Pangolin, branch build_on_dlbox1.
 
 ## OpenCV
 We use [OpenCV](http://opencv.org) to manipulate images and features. Dowload and install instructions can be found at: http://opencv.org. 
