@@ -25,5 +25,5 @@ cd ..
 
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DTORCH_PATH=/home/t/Workspace/deps/pytorch/torch/share/cmake/Torch
+cmake .. -DCMAKE_BUILD_TYPE=Release -DTORCH_PATH=/pytorch/torch/lib/tmp_install/share/cmake/Torch
 make -j4
