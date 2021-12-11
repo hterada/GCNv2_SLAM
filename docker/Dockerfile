@@ -83,7 +83,7 @@ WORKDIR /GCNv2_SLAM
 RUN ./build.sh
 
 # PATH
-ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH /usr/local/cuda/compat:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # END ####
 WORKDIR /
