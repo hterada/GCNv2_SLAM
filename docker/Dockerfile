@@ -43,20 +43,10 @@ RUN apt-get install -y libnuma-dev
 
 # Pytorch C++ lib
 WORKDIR /
-ARG pytorch_src_update=1
+ARG pytorch_src_update=2
 RUN git clone --recursive -b v1.0.1-cudnn8.2 https://github.com/hterada/pytorch.git
 WORKDIR /pytorch/build
 RUN python ../tools/build_libtorch.py
-
-
-
-# RUN apt-get install -y software-properties-common
-
-# # nccl
-# RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
-# RUN add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
-# RUN apt update
-# RUN apt install -y --allow-change-held-packages libnccl2 libnccl-dev
 
 # # Catch2 (for Pangolin)
 # WORKDIR /
@@ -65,34 +55,35 @@ RUN python ../tools/build_libtorch.py
 # WORKDIR /Catch2/build
 # RUN cmake .. && make . install
 
-# # Pangolin
-# WORKDIR /
-# RUN git clone --recursive -b build_on_dlbox1 https://github.com/hterada/Pangolin.git
-# WORKDIR /Pangolin
-# RUN ./scripts/install_prerequisites.sh recommended
-# RUN mkdir build
-# WORKDIR /Pangolin/build
-# RUN cmake ..
-# RUN cmake --build .
-# RUN cmake --build . --target install
-# RUN cmake --build . --target clean
+# Pangolin
+WORKDIR /
+ARG pangolin_src_update=1
+RUN git clone --recursive -b build_on_dlbox1 https://github.com/hterada/Pangolin.git
+WORKDIR /Pangolin
+RUN ./scripts/install_prerequisites.sh recommended
+WORKDIR /Pangolin/build
+RUN cmake ..
+RUN cmake --build .
+RUN cmake --build . --target install
+RUN cmake --build . --target clean
 
-# # Intel Performance Library
-# WORKDIR /ipp
-# RUN wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-# RUN apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-# RUN wget https://apt.repos.intel.com/setup/intelproducts.list -O /etc/apt/sources.list.d/intelproducts.list
-# RUN sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
-# RUN sh -c 'echo deb https://apt.repos.intel.com/ipp all main > /etc/apt/sources.list.d/intel-ipp.list'
-# RUN sh -c 'echo deb https://apt.repos.intel.com/tbb all main > /etc/apt/sources.list.d/intel-tbb.list'
-# RUN sh -c 'echo deb https://apt.repos.intel.com/daal all main > /etc/apt/sources.list.d/intel-daal.list'
-# RUN sh -c 'echo deb https://apt.repos.intel.com/mpi all main > /etc/apt/sources.list.d/intel-mpi.list'
-# RUN sh -c 'echo deb https://apt.repos.intel.com/intelpython binary/ > /etc/apt/sources.list.d/intelpython.list'
-# RUN apt-get update
+# OpenCV
+WORKDIR /
+RUN apt-get install -y libopencv-dev
 
-# # OpenCV
-# WORKDIR /
-# RUN apt-get install -y libopencv-dev python-opencv
+# Eigen3
+WORKDIR /
+RUN apt-get install -y libeigen3-dev
+
+# GCNv2
+WORKDIR /
+ARG gcnv2_src_update=1
+RUN git clone -b build_docker_image https://github.com/hterada/GCNv2_SLAM.git
+WORKDIR /GCNv2_SLAM
+RUN ./build.sh
+
+# PATH
+ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # END ####
 WORKDIR /
