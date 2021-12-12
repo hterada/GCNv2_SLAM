@@ -31,8 +31,10 @@
 
 using namespace std;
 
+#define TR {std::cout << __FILE__ << "(" << __LINE__ << ")" << std::endl;}
 
-void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
+
+bool LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
                 vector<string> &vstrImageFilenamesD, vector<double> &vTimestamps);
 
 int main(int argc, char **argv)
@@ -48,7 +50,11 @@ int main(int argc, char **argv)
     vector<string> vstrImageFilenamesD;
     vector<double> vTimestamps;
     string strAssociationFilename = string(argv[4]);
-    LoadImages(strAssociationFilename, vstrImageFilenamesRGB, vstrImageFilenamesD, vTimestamps);
+    TR;
+    if( ! LoadImages(strAssociationFilename, vstrImageFilenamesRGB, vstrImageFilenamesD, vTimestamps) ) {
+        return 1;
+    }
+    TR;
 
     // Check consistency in the number of images and depthmaps
     int nImages = vstrImageFilenamesRGB.size();
@@ -62,6 +68,7 @@ int main(int argc, char **argv)
         cerr << endl << "Different number of images for rgb and depth." << endl;
         return 1;
     }
+    TR;
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::RGBD,true);
@@ -78,6 +85,7 @@ int main(int argc, char **argv)
     cv::Mat imRGB, imD, imF;
     for(int ni=0; ni<nImages; ni++)
     {
+        TR;
         // Read image and depthmap from file
         imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
         imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],CV_LOAD_IMAGE_UNCHANGED);
@@ -145,12 +153,19 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
+bool LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
                 vector<string> &vstrImageFilenamesD, vector<double> &vTimestamps)
 {
+    TR;
+    std::cout << "strAssociationFilename:" << strAssociationFilename << std::endl;
     ifstream fAssociation;
     fAssociation.open(strAssociationFilename.c_str());
-    while(!fAssociation.eof())
+    if( ! fAssociation ) {
+        std::cerr << "Error: can't open '" << strAssociationFilename << "'" << std::endl;
+        return false;
+    }
+    TR;
+    while(! fAssociation.eof())
     {
         string s;
         getline(fAssociation,s);
@@ -170,4 +185,6 @@ void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageF
 
         }
     }
+
+    return true;
 }
