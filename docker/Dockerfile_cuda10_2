@@ -57,7 +57,7 @@ RUN python ../tools/build_libtorch.py
 
 # Pangolin
 WORKDIR /
-ARG pangolin_src_update=1
+ARG pangolin_src_update=2
 RUN git clone --recursive -b build_on_dlbox1 https://github.com/hterada/Pangolin.git
 WORKDIR /Pangolin
 RUN ./scripts/install_prerequisites.sh recommended
