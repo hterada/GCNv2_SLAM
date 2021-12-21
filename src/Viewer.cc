@@ -23,6 +23,8 @@
 
 #include <mutex>
 
+#include "TR.h"
+
 namespace ORB_SLAM2
 {
 
@@ -30,6 +32,7 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
     mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
     mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false)
 {
+    TR;
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 
     float fps = fSettings["Camera.fps"];
@@ -56,7 +59,9 @@ void Viewer::Run()
     mbFinished = false;
     mbStopped = false;
 
+    TR;
     pangolin::CreateWindowAndBind("ORB-SLAM2: Map Viewer",1024,768);
+    TR;
 
     // 3D Mouse handler requires depth testing to be enabled
     glEnable(GL_DEPTH_TEST);
@@ -78,16 +83,19 @@ void Viewer::Run()
                 pangolin::ProjectionMatrix(1024,768,mViewpointF,mViewpointF,512,389,0.1,1000),
                 pangolin::ModelViewLookAt(mViewpointX,mViewpointY,mViewpointZ, 0,0,0,0.0,-1.0, 0.0)
                 );
+    TR;
 
     // Add named OpenGL viewport to window and provide 3D Handler
     pangolin::View& d_cam = pangolin::CreateDisplay()
             .SetBounds(0.0, 1.0, pangolin::Attach::Pix(175), 1.0, -1024.0f/768.0f)
             .SetHandler(new pangolin::Handler3D(s_cam));
+    TR;
 
     pangolin::OpenGlMatrix Twc;
     Twc.SetIdentity();
 
     cv::namedWindow("ORB-SLAM2: Current Frame");
+    TR;
 
     bool bFollow = true;
     bool bLocalizationMode = false;
@@ -97,6 +105,7 @@ void Viewer::Run()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc);
+        TR;
 
         if(menuFollowCamera && bFollow)
         {
@@ -112,7 +121,7 @@ void Viewer::Run()
         {
             bFollow = false;
         }
-
+        TR;
         if(menuLocalizationMode && !bLocalizationMode)
         {
             mpSystem->ActivateLocalizationMode();
@@ -123,6 +132,7 @@ void Viewer::Run()
             mpSystem->DeactivateLocalizationMode();
             bLocalizationMode = false;
         }
+        TR;
 
         d_cam.Activate(s_cam);
         glClearColor(1.0f,1.0f,1.0f,1.0f);
@@ -133,9 +143,11 @@ void Viewer::Run()
             mpMapDrawer->DrawMapPoints();
 
         pangolin::FinishFrame();
+        TR;
 
         cv::Mat im = mpFrameDrawer->DrawFrame();
         cv::imshow("ORB-SLAM2: Current Frame",im);
+        TR;
         cv::waitKey(mT);
 
         if(menuReset)
